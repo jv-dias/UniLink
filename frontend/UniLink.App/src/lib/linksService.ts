@@ -36,4 +36,18 @@ export const linksService = {
     console.log('linksService.reorder', newList.map((l) => l.id));
     return Promise.resolve(storage);
   },
+  async getByUsername(username: string) {
+    console.log('linksService.getByUsername', username);
+    // Mock: return profile + links for username
+    const profile = {
+      username,
+      name: username === 'gabriel' ? 'Gabriel Barros' : username,
+      bio: 'Estudante e criador de conteúdo',
+      avatar: '/avatars/user.jpg',
+      theme: 'padrão',
+    };
+    // use storage as links (in real app filter by owner)
+    const links = storage.map((s) => ({ ...s }));
+    return Promise.resolve({ profile, links });
+  },
 };
