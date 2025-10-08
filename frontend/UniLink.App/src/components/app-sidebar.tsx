@@ -37,10 +37,10 @@ const data = {
     email: "gabriel@exemplo.com",
     avatar: "/avatars/user.jpg",
   },
-  navMain: [
+    navMain: [
     {
-      title: "Dashboard",
-      url: "/admin/dashboard",
+      title: "Painel",
+      url: "/admin/painel",
       icon: IconDashboard,
     },
     {
@@ -50,7 +50,7 @@ const data = {
     },
     {
       title: "Perfil",
-      url: "/admin/profile",
+      url: "/admin/perfil",
       icon: IconUsers,
     },
   ],
@@ -61,12 +61,12 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Login",
-          url: "/login",
+          title: "Entrar",
+          url: "/auth/entrar",
         },
         {
-          title: "Registrar",
-          url: "/register",
+          title: "Cadastrar",
+          url: "/auth/cadastro",
         },
       ],
     },
