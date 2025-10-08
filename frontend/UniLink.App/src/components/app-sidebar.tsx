@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   IconCamera,
   IconChartBar,
@@ -9,18 +9,18 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
+  IconLink,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavDocuments } from "@/components/nav-documents";
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -29,124 +29,98 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Gabriel Barros",
+    email: "gabriel@exemplo.com",
+    avatar: "/avatars/user.jpg",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/admin/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
+      title: "Meus Links",
+      url: "/admin/links",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
+      title: "Perfil",
+      url: "/admin/profile",
       icon: IconUsers,
     },
   ],
   navClouds: [
     {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
+      title: "Autenticação",
       icon: IconFileDescription,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
-          url: "#",
+          title: "Login",
+          url: "/login",
         },
         {
-          title: "Archived",
-          url: "#",
+          title: "Registrar",
+          url: "/register",
         },
       ],
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
+      title: "Público",
+      icon: IconFolder,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
-          url: "#",
+          title: "Página do Usuário",
+          url: "/[username]",
         },
         {
-          title: "Archived",
-          url: "#",
+          title: "Página Inicial",
+          url: "/",
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
+      title: "Configurações",
+      url: "/admin/profile",
       icon: IconSettings,
     },
     {
-      title: "Get Help",
+      title: "Ajuda",
       url: "#",
       icon: IconHelp,
     },
     {
-      title: "Search",
+      title: "Pesquisar",
       url: "#",
       icon: IconSearch,
     },
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
+      name: "API de Links",
+      url: "/docs/links",
       icon: IconDatabase,
     },
     {
-      name: "Reports",
-      url: "#",
+      name: "Relatórios",
+      url: "/admin/dashboard",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
+      name: "Editor de Estilo",
+      url: "/admin/profile",
+      icon: IconFileAi,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -158,9 +132,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+              <a href="#" className="flex items-center gap-2">
+                <IconLink className="!size-6 text-primary" />
+                <span className="text-lg font-bold tracking-tight text-primary">UniLink</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -175,5 +149,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
