@@ -1,9 +1,14 @@
-import { IconLink, IconArrowUpRight, IconUsers, IconSparkles } from "@tabler/icons-react"
+import {
+  IconLink,
+  IconArrowUpRight,
+  IconUsers,
+  IconSparkles,
+} from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
+import * as React from "react"
 import {
   Card,
-  CardAction,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -21,80 +26,92 @@ export function SectionCards() {
     clicks: 98,
   }
 
+  const CardStat = ({
+    title,
+    value,
+    icon,
+    sub,
+    action,
+    highlight = false,
+  }: {
+    title: string
+    value: React.ReactNode
+    icon: React.ElementType
+    sub?: string
+    action?: React.ReactNode
+    highlight?: boolean
+  }) => (
+    <Card
+      className={`@container/card transform transition hover:-translate-y-1 hover:shadow-lg duration-200 ${
+        highlight ? "ring-1 ring-primary/20" : ""
+      }`}
+    >
+      <CardHeader className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-sm"
+            aria-hidden
+          >
+            {React.createElement(icon, { className: "h-6 w-6" })}
+          </div>
+          <div>
+            <CardDescription className="text-sm">{title}</CardDescription>
+            <CardTitle className="mt-1 text-2xl font-semibold tabular-nums">
+              {value}
+            </CardTitle>
+          </div>
+        </div>
+        {action && <div className="self-start">{action}</div>}
+      </CardHeader>
+      <CardFooter className="flex-col items-start gap-1.5 text-sm">
+        <div className="font-medium text-sm">{sub}</div>
+      </CardFooter>
+    </Card>
+  )
+
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Total de links</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {totalLinks}
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconLink />
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">Links disponíveis</div>
-          <div className="text-muted-foreground">Organize seus links e conteúdos</div>
-        </CardFooter>
-      </Card>
+    <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 xl:grid-cols-4 lg:px-6">
+      <CardStat
+        title="Total de links"
+        value={totalLinks}
+        icon={IconLink}
+        sub="Links disponíveis para a sua página"
+        action={<Badge>Ver</Badge>}
+      />
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Cliques hoje</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {clicksToday}
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconArrowUpRight />
-              +8%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">Tendência das últimas 24h</div>
-          <div className="text-muted-foreground">Acompanhe o desempenho dos seus links</div>
-        </CardFooter>
-      </Card>
+      <CardStat
+        title="Cliques hoje"
+        value={clicksToday}
+        icon={IconArrowUpRight}
+        sub="Tendência nas últimas 24 horas"
+        action={<Badge variant="outline">+8%</Badge>}
+      />
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Seguidores ativos</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {activeFollowers}
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconUsers />
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">Usuários engajados</div>
-          <div className="text-muted-foreground">Interações dos seguidores</div>
-        </CardFooter>
-      </Card>
+      <CardStat
+        title="Seguidores ativos"
+        value={activeFollowers}
+        icon={IconUsers}
+        sub="Usuários engajados com seus links"
+        action={<Badge variant="outline">Ativo</Badge>}
+      />
 
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Link mais clicado</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {topLink.title}
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconSparkles />
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">{topLink.clicks} cliques</div>
-          <div className="text-muted-foreground">Visualizar link: <a href={topLink.url} className="underline">Abrir</a></div>
-        </CardFooter>
-      </Card>
+      <CardStat
+        title="Link mais clicado"
+        value={topLink.title}
+        icon={IconSparkles}
+        sub={`${topLink.clicks} cliques — `}
+        action={
+          <a
+            href={topLink.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium text-primary underline-offset-2 hover:underline"
+          >
+            Abrir
+          </a>
+        }
+        highlight
+      />
     </div>
   )
 }
