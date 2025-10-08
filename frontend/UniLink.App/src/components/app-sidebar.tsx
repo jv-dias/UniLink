@@ -37,7 +37,7 @@ const data = {
     email: "gabriel@exemplo.com",
     avatar: "/avatars/user.jpg",
   },
-    navMain: [
+  navMain: [
     {
       title: "Painel",
       url: "/admin/painel",
@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Meus Links",
-      url: "/admin/links",
+      url: "/admin/meus-links",
       icon: IconListDetails,
     },
     {
@@ -132,10 +132,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#" className="flex items-center gap-2">
-                <IconLink className="!size-6 text-primary" />
-                <span className="text-lg font-bold tracking-tight text-primary">UniLink</span>
-              </a>
+              <div className="flex justify-center gap-2 md:justify-start">
+                <a href="#" className="flex items-center gap-2 font-medium">
+                  <div className="flex size-6 items-center justify-center rounded-md">
+                    <IconLink className="size-4 text-primary" />
+                  </div>
+                  UniLink
+                </a>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
