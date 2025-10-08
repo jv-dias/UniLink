@@ -1,0 +1,6 @@
+@UniLink.Api_HostAddress = http://localhost:5039
+
+GET {{UniLink.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

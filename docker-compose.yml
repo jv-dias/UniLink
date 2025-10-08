@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgres-unilink-db:
+    image: postgres:15
+    container_name: postgres-unilink-db
+    restart: always
+    environment:
+      POSTGRES_USER: unilink_user
+      POSTGRES_PASSWORD: UERJ2025ThisIsAStrongPassword!
+      POSTGRES_DB: unilink_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - unilink_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  unilink_postgres_data:
