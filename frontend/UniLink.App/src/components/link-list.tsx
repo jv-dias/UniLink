@@ -1,4 +1,4 @@
-import React from "react";
+// React import not required with automatic JSX runtime
 import { Button } from "@/components/ui/button";
 import { IconPencil, IconTrash, IconEye, IconSwitchHorizontal } from "@tabler/icons-react";
 import { DragContainer } from "./drag-container";
