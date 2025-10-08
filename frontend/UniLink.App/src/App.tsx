@@ -6,6 +6,7 @@ import Home from "./pages/index";
 import MeusLinks from "./pages/MeusLinks";
 import Perfil from "./pages/Perfil";
 import PublicProfile from "./pages/public/[username]";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/admin/meus-links" element={<MeusLinks />} />
   <Route path="/admin/perfil" element={<Perfil />} />
         <Route path="/public/:username" element={<PublicProfile />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
