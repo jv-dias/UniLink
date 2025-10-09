@@ -75,7 +75,16 @@ export default function PerfilPage() {
                   {avatar ? (
                     <AvatarImage src={avatar} alt={name} />
                   ) : (
-                    <AvatarFallback />
+                    <AvatarFallback>
+                      {name
+                        ? name
+                            .trim()
+                            .split(/\s+/)
+                            .slice(0, 2)
+                            .map((n) => n.charAt(0).toUpperCase())
+                            .join("")
+                        : "U"}
+                    </AvatarFallback>
                   )}
                 </Avatar>
 

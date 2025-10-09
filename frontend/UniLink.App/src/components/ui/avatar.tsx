@@ -44,10 +44,9 @@ function AvatarFallback({
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full bg-cover bg-center",
+        "flex size-full items-center justify-center rounded-full text-[0.75rem] font-medium bg-primary/10 text-primary",
         className
       )}
-      style={{ backgroundImage: 'url(/login-hero.jpg)' }}
       {...props}
     />
   )
