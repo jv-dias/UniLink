@@ -15,10 +15,14 @@ export function LinkForm({
   initial,
   onSubmit,
   className,
+  formId,
+  hideSubmit,
 }: {
   initial?: Partial<LinkItem>;
   onSubmit: (data: Omit<LinkItem, "id">) => void;
   className?: string;
+  formId?: string;
+  hideSubmit?: boolean;
 }) {
   const [title, setTitle] = React.useState(initial?.title ?? "");
   const [url, setUrl] = React.useState(initial?.url ?? "");
@@ -30,7 +34,7 @@ export function LinkForm({
   }
 
   return (
-    <form className={cn("flex flex-col gap-4", className)} onSubmit={handleSubmit}>
+    <form id={formId} className={cn("flex flex-col gap-4", className)} onSubmit={handleSubmit}>
       <Field>
         <FieldLabel htmlFor="link-title">Título</FieldLabel>
         <Input
@@ -62,7 +66,7 @@ export function LinkForm({
           />
           <span>Ativo</span>
         </label>
-        <Button type="submit">Salvar</Button>
+        {!hideSubmit && <Button type="submit">Salvar</Button>}
       </div>
     </form>
   );

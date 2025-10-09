@@ -7,6 +7,7 @@ import { LinkForm } from "@/components/link-form";
 import { linksService } from "@/lib/linksService";
 import type { LinkItem } from "@/components/link-form";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function MeusLinksPage() {
   const [links, setLinks] = React.useState<LinkItem[]>([]);
@@ -65,12 +66,6 @@ export default function MeusLinksPage() {
             </div>
           </div>
 
-          {showForm && (
-            <div className="mb-4">
-              <LinkForm onSubmit={handleCreate} />
-            </div>
-          )}
-
           <LinkList
             items={links}
             onEdit={(item) => setEditing(item)}
@@ -79,12 +74,49 @@ export default function MeusLinksPage() {
             onReorder={handleReorder}
           />
 
-          {editing && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">Editar link</h3>
-              <LinkForm initial={editing} onSubmit={(data) => handleUpdate(editing.id, data)} />
-            </div>
-          )}
+          {/* Add Link Modal */}
+          <Dialog open={showForm} onOpenChange={setShowForm}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Adicionar novo link</DialogTitle>
+              </DialogHeader>
+              <div className="p-4 pt-0">
+                <LinkForm onSubmit={(data) => handleCreate(data)} className="mt-2" formId="create-link-form" hideSubmit />
+              </div>
+              <DialogFooter>
+                <div className="flex w-full justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowForm(false)}>Fechar</Button>
+                  <Button type="submit" form="create-link-form">Salvar</Button>
+                </div>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Edit Link Modal */}
+          <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Editar link</DialogTitle>
+              </DialogHeader>
+              <div className="p-4 pt-0">
+                {editing && (
+                  <LinkForm
+                    initial={editing}
+                    onSubmit={(data) => handleUpdate(editing.id, data)}
+                    className="mt-2"
+                    formId="edit-link-form"
+                    hideSubmit
+                  />
+                )}
+              </div>
+              <DialogFooter>
+                <div className="flex w-full justify-end gap-2">
+                  <Button variant="outline" onClick={() => setEditing(null)}>Fechar</Button>
+                  <Button type="submit" form="edit-link-form">Salvar</Button>
+                </div>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </SidebarInset>
     </SidebarProvider>
