@@ -1,17 +1,29 @@
-version: '3.8'
 services:
-  postgres-unilink-db:
-    image: postgres:15
-    container_name: postgres-unilink-db
+  mysql:
+    image: mysql:8.1
+    container_name: mysql_dev
     restart: always
     environment:
-      POSTGRES_USER: unilink_user
-      POSTGRES_PASSWORD: UERJ2025ThisIsAStrongPassword!
-      POSTGRES_DB: unilink_db
+      MYSQL_ROOT_PASSWORD: RootSenha123!
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: DevSenha123!
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - unilink_postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
 
 volumes:
-  unilink_postgres_data:
+  mysql_data:
