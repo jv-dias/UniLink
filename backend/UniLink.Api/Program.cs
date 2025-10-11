@@ -1,4 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using UniLink.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Adicione esta seção ---
+// 1. Pega a string de conexão do appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 2. Registra o AppDbContext e diz para ele usar o provedor do MySQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
 
 // Add services to the container.
 
