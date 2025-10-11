@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/register";
-import Home from "./pages/index";
-import MeusLinks from "./pages/MeusLinks";
-import Perfil from "./pages/Perfil";
-import PublicProfile from "./pages/public/[username]";
-import NotFound from "./pages/NotFound";
+import Dashboard from "@/features/dashboard/pages";
+import Login from "@/features/auth/pages/login";
+import Register from "@/features/auth/pages/register";
+import Home from "./features/home/index";
+import MeusLinks from "@/features/links/pages/meus-links";
+import Perfil from "@/features/profile/pages/perfil";
+import PublicProfile from "@/features/public-profile/pages";
+import NotFound from "@/features/not-found/pages";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route path="/auth/cadastro" element={<Register />} />
         <Route path="/admin/painel" element={<Dashboard />} />
         <Route path="/admin/meus-links" element={<MeusLinks />} />
-  <Route path="/admin/perfil" element={<Perfil />} />
+        <Route path="/admin/perfil" element={<Perfil />} />
         <Route path="/public/:username" element={<PublicProfile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
