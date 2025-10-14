@@ -11,7 +11,7 @@ namespace UniLink.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Protege todos os endpoints neste controlador
+    [Authorize] // Protege todos os endpoints neste controlador. Ninguém entra sem um token JWT válido.
     public class LinksController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -21,52 +21,89 @@ namespace UniLink.Api.Controllers
             _context = context;
         }
 
-        // GET: api/links - Lista os links do utilizador autenticado
+        // GET: api/links
+        // Lista todos os links pertencentes ao usuário autenticado.
         [HttpGet]
         public async Task<IActionResult> GetMyLinks()
         {
+            // Obtém o ID do usuário a partir do token JWT.
+            // O '!' no final é para informar ao compilador que confiamos que o valor não será nulo,
+            // pois o atributo [Authorize] garante que o token é válido.
             var userId = ulong.Parse(User.FindFirstValue("id")!);
+
             var links = await _context.Links
                 .Where(l => l.UserId == userId)
                 .OrderBy(l => l.Position)
+                // Mapeia as entidades do banco para DTOs para evitar ciclos de referência.
+                .Select(l => new LinkDto
+                {
+                    Id = l.Id,
+                    Title = l.Title,
+                    Url = l.Url,
+                    Position = l.Position,
+                    IsActive = l.IsActive ?? true // Converte o booleano anulável para um booleano padrão.
+                })
                 .ToListAsync();
+
             return Ok(links);
         }
 
-        // POST: api/links - Cria um novo link para o utilizador autenticado
+        // POST: api/links
+        // Cria um novo link para o usuário autenticado.
         [HttpPost]
         public async Task<IActionResult> CreateLink(CreateLinkDto createLinkDto)
         {
             var userId = ulong.Parse(User.FindFirstValue("id")!);
+
+            // Precisamos buscar o usuário e seus links existentes para a validação.
             var user = await _context.Users
-                                     .Include(u => u.Links)
+                                     .Include(u => u.Links) // Essencial para que 'user.Links.Count' funcione!
                                      .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null) return Unauthorized();
+            if (user == null)
+            {
+                // Este caso é raro, pois o token já foi validado, mas é uma boa verificação de segurança.
+                return Unauthorized();
+            }
 
-            // --- Padrão STRATEGY em ação ---
+            // --- Padrão STRATEGY em Ação ---
+            // Seleciona a estratégia de validação com base no plano do usuário.
             ILinkValidationStrategy validationStrategy = user.Plan == "Pro"
                 ? new ProPlanStrategy()
                 : new FreePlanStrategy();
 
+            // Executa a estratégia. Se ela retornar 'false', bloqueia a criação.
             if (!validationStrategy.CanUserAddLink(user))
             {
                 return BadRequest("Limite de links atingido para o plano Free.");
             }
-            // --- Fim do Padrão Strategy ---
+            // --- Fim da Aplicação do Padrão Strategy ---
 
             var newLink = new Link
             {
                 Title = createLinkDto.Title,
                 Url = createLinkDto.Url,
                 UserId = userId,
-                Position = (user.Links.Any() ? user.Links.Max(l => l.Position) : 0) + 1
+                // Define a posição do novo link como o último da lista.
+                Position = (user.Links.Any() ? user.Links.Max(l => l.Position) : 0) + 1,
+                IsActive = true // Links são criados como ativos por padrão.
             };
 
             _context.Links.Add(newLink);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMyLinks), new { id = newLink.Id }, newLink);
+            // Mapeia a nova entidade para um DTO antes de enviar a resposta.
+            var linkDto = new LinkDto
+            {
+                Id = newLink.Id,
+                Title = newLink.Title,
+                Url = newLink.Url,
+                Position = newLink.Position,
+                IsActive = newLink.IsActive ?? true
+            };
+
+            // Retorna um status 201 Created com a localização do novo recurso e o próprio recurso.
+            return CreatedAtAction(nameof(GetMyLinks), new { id = linkDto.Id }, linkDto);
         }
     }
 }

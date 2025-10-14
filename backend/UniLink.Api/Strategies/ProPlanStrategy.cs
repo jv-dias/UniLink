@@ -1,5 +1,10 @@
 ﻿using UniLink.Api.Models;
-public class ProPlanStrategy : ILinkValidationStrategy
+using UniLink.Api.Strategies;
+
+namespace UniLink.Api.Strategies
 {
-    public bool CanUserAddLink(User user) => true;
+    public class ProPlanStrategy : ILinkValidationStrategy
+    {
+        public bool CanUserAddLink(User user) => true;
+    }
 }

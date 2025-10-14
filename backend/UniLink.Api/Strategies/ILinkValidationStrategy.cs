@@ -1,2 +1,8 @@
 ﻿using UniLink.Api.Models;
-public interface ILinkValidationStrategy { bool CanUserAddLink(User user); }
+
+namespace UniLink.Api.Strategies{
+	public interface ILinkValidationStrategy
+	{
+		bool CanUserAddLink(User user);
+	}
+}
