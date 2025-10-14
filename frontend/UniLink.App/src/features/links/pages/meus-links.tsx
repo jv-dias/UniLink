@@ -4,45 +4,72 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { LinkList } from "@/components/link-list";
 import { LinkForm } from "@/components/link-form";
-import { linksService } from "@/lib/linksService";
-import type { LinkItem } from "@/components/link-form";
+import { linksService } from "@/features/links/services/linksService";
+import type { LinkDto } from "@/shared/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function MeusLinksPage() {
-	const [links, setLinks] = React.useState<LinkItem[]>([]);
-	const [editing, setEditing] = React.useState<LinkItem | null>(null);
-	const [showForm, setShowForm] = React.useState(false);
+  const [links, setLinks] = React.useState<LinkDto[]>([]);
+  const [editing, setEditing] = React.useState<LinkDto | null>(null);
+  const [showForm, setShowForm] = React.useState(false);
 
-	React.useEffect(() => {
-		linksService.getAll().then(setLinks);
-	}, []);
+  React.useEffect(() => {
+    loadLinks();
+  }, []);
 
-	async function handleCreate(data: Omit<LinkItem, "id">) {
+  async function loadLinks() {
+    try {
+      const data = await linksService.getAll();
+      setLinks(data);
+    } catch (err: any) {
+      console.error("Erro ao carregar links:", err);
+    }
+  }
+
+	async function handleCreate(data: Omit<LinkDto, "id">) {
 		const newItem = await linksService.create(data);
 		setLinks((s) => [newItem, ...s]);
 		setShowForm(false);
 	}
 
-	async function handleUpdate(id: string, data: Partial<LinkItem>) {
-		await linksService.update(id, data);
+	async function handleUpdate(id: number, data: Partial<LinkDto>) {
+		const item = links.find((l) => l.id === id);
+		if (!item) return;
+		
+		// UpdateLinkDto requires all fields, so merge with existing data
+		const updateData = {
+			title: data.title ?? item.title,
+			url: data.url ?? item.url,
+			isActive: data.isActive ?? item.isActive,
+		};
+		
+		await linksService.update(id, updateData);
 		setLinks((s) => s.map((l) => (l.id === id ? { ...l, ...data } : l)));
 		setEditing(null);
 	}
 
-	async function handleDelete(id: string) {
+	async function handleDelete(id: number) {
 		await linksService.delete(id);
 		setLinks((s) => s.filter((l) => l.id !== id));
 	}
 
-	async function handleToggle(id: string) {
+	async function handleToggle(id: number) {
 		const item = links.find((l) => l.id === id);
 		if (!item) return;
-		await linksService.update(id, { active: !item.active });
-		setLinks((s) => s.map((l) => (l.id === id ? { ...l, active: !l.active } : l)));
+		
+		// UpdateLinkDto requires all fields
+		const updateData = {
+			title: item.title,
+			url: item.url,
+			isActive: !item.isActive,
+		};
+		
+		await linksService.update(id, updateData);
+		setLinks((s) => s.map((l) => (l.id === id ? { ...l, isActive: !l.isActive } : l)));
 	}
 
-	async function handleReorder(newItems: LinkItem[]) {
+	async function handleReorder(newItems: LinkDto[]) {
 		await linksService.reorder(newItems);
 		setLinks(newItems);
 	}

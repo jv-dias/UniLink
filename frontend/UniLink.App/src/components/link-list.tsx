@@ -10,7 +10,7 @@ import {
   IconLink as IconLinkGlyph,
 } from "@tabler/icons-react";
 import { DragContainer } from "./drag-container";
-import type { LinkItem } from "./link-form";
+import type { LinkDto } from "@/shared/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Toggle } from "@/components/ui/toggle";
@@ -34,13 +34,13 @@ function getFaviconUrl(url: string) {
 }
 
 export function LinkList({ items, onEdit, onDelete, onToggle, onReorder }: {
-  items: LinkItem[];
-  onEdit: (item: LinkItem) => void;
-  onDelete: (id: string) => void;
-  onToggle: (id: string) => void;
-  onReorder: (newItems: LinkItem[]) => void;
+  items: LinkDto[];
+  onEdit: (item: LinkDto) => void;
+  onDelete: (id: number) => void;
+  onToggle: (id: number) => void;
+  onReorder: (newItems: LinkDto[]) => void;
 }) {
-  const [deleteTarget, setDeleteTarget] = React.useState<LinkItem | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<LinkDto | null>(null);
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -70,10 +70,10 @@ export function LinkList({ items, onEdit, onDelete, onToggle, onReorder }: {
 
               <div className="flex items-center gap-2">
                 <Badge
-                  variant={item.active ? "outline" : "outline"}
-                  className={`hidden sm:inline-flex ${item.active ? "bg-emerald-500 text-white border-transparent" : ""}`}
+                  variant={item.isActive ? "outline" : "outline"}
+                  className={`hidden sm:inline-flex ${item.isActive ? "bg-emerald-500 text-white border-transparent" : ""}`}
                 >
-                  {item.active ? "Ativo" : "Inativo"}
+                  {item.isActive ? "Ativo" : "Inativo"}
                 </Badge>
 
                 <Tooltip>
@@ -97,16 +97,16 @@ export function LinkList({ items, onEdit, onDelete, onToggle, onReorder }: {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Toggle
-                      aria-label={item.active ? "Desativar" : "Ativar"}
-                      pressed={item.active}
+                      aria-label={item.isActive ? "Desativar" : "Ativar"}
+                      pressed={item.isActive}
                       onPressedChange={() => onToggle(item.id)}
                       variant="outline"
                       size="sm"
                     >
-                      {item.active ? "On" : "Off"}
+                      {item.isActive ? "On" : "Off"}
                     </Toggle>
                   </TooltipTrigger>
-                  <TooltipContent>{item.active ? "Desativar" : "Ativar"}</TooltipContent>
+                  <TooltipContent>{item.isActive ? "Desativar" : "Ativar"}</TooltipContent>
                 </Tooltip>
 
                 <Tooltip>

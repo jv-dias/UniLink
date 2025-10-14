@@ -3,13 +3,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import type { LinkDto } from "@/shared/types";
 
-export type LinkItem = {
-  id: string;
-  title: string;
-  url: string;
-  active: boolean;
-};
+// Keep backward compatible type with old components
+export type LinkItem = LinkDto;
 
 export function LinkForm({
   initial,
@@ -26,11 +23,11 @@ export function LinkForm({
 }) {
   const [title, setTitle] = React.useState(initial?.title ?? "");
   const [url, setUrl] = React.useState(initial?.url ?? "");
-  const [active, setActive] = React.useState(initial?.active ?? true);
+  const [isActive, setIsActive] = React.useState(initial?.isActive ?? true);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit({ title, url, active });
+    onSubmit({ title, url, isActive, position: initial?.position ?? 0 });
   }
 
   return (
@@ -61,8 +58,8 @@ export function LinkForm({
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={active}
-            onChange={(e) => setActive(e.target.checked)}
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
           />
           <span>Ativo</span>
         </label>
