@@ -13,6 +13,8 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
+    public string Plan { get; set; } = null!;
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
