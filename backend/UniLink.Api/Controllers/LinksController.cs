@@ -105,5 +105,66 @@ namespace UniLink.Api.Controllers
             // Retorna um status 201 Created com a localização do novo recurso e o próprio recurso.
             return CreatedAtAction(nameof(GetMyLinks), new { id = linkDto.Id }, linkDto);
         }
+
+        // PUT: api/links/{id} - Atualiza um link existente.
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLink(ulong id, UpdateLinkDto updateLinkDto)
+        {
+            var userId = ulong.Parse(User.FindFirstValue("id")!);
+
+            // 1. Encontra o link que o usuário quer editar.
+            var link = await _context.Links.FindAsync(id);
+
+            // 2. Verifica se o link existe e se pertence ao usuário logado.
+            if (link == null)
+            {
+                return NotFound("Link não encontrado.");
+            }
+            if (link.UserId != userId)
+            {
+                // Um usuário não pode editar o link de outro!
+                return Forbid("Acesso negado.");
+            }
+
+            // 3. Atualiza as propriedades do link com os dados do DTO.
+            link.Title = updateLinkDto.Title;
+            link.Url = updateLinkDto.Url;
+            link.IsActive = updateLinkDto.IsActive;
+
+            // 4. Salva as alterações no banco de dados.
+            await _context.SaveChangesAsync();
+
+            // Uma resposta 204 No Content é o padrão para um PUT bem-sucedido.
+            return NoContent();
+        }
+        
+        // DELETE: api/links/{id} - Exclui um link existente.
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLink(ulong id)
+        {
+            var userId = ulong.Parse(User.FindFirstValue("id")!);
+
+            // 1. Encontra o link que o usuário quer excluir.
+            var link = await _context.Links.FindAsync(id);
+
+            // 2. Verifica se o link existe e se pertence ao usuário logado.
+            if (link == null)
+            {
+                return NotFound("Link não encontrado.");
+            }
+            if (link.UserId != userId)
+            {
+                return Forbid("Acesso negado.");
+            }
+
+            // 3. Remove o link do contexto.
+            _context.Links.Remove(link);
+
+            // 4. Salva as alterações (confirma a exclusão) no banco.
+            await _context.SaveChangesAsync();
+
+            // Uma resposta 204 No Content é o padrão para um DELETE bem-sucedido.
+            return NoContent();
+        }
     }
 }
