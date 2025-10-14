@@ -31,7 +31,7 @@ namespace UniLink.Api.Controllers
             if (id != userIdFromToken)
             {
                 // Retorna 403 Forbidden: você está autenticado, mas não tem permissão para esta ação.
-                return Forbid("Você não tem permissão para editar este usuário.");
+                return Forbid();
             }
 
             // 3. Busca o usuário no banco de dados.
@@ -67,7 +67,7 @@ namespace UniLink.Api.Controllers
             // Garante que o usuário só possa excluir a sua própria conta.
             if (id != userIdFromToken)
             {
-                return Forbid("Você não tem permissão para excluir este usuário.");
+                return Forbid();
             }
 
             // 3. Busca o usuário no banco de dados.
@@ -84,6 +84,75 @@ namespace UniLink.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent(); // Resposta padrão de sucesso para um DELETE.
+        }
+
+        // PATCH: api/users/{id}/upgrade
+        // Endpoint dedicado para fazer o upgrade do plano de um usuário para "Pro".
+        [HttpPatch("{id}/upgrade")]
+        public async Task<IActionResult> UpgradeToPro(ulong id)
+        {
+            // 1. Obtém o ID do usuário a partir do token JWT (o usuário autenticado).
+            var userIdFromToken = ulong.Parse(User.FindFirstValue("id")!);
+
+            // 2. VERIFICAÇÃO DE SEGURANÇA CRUCIAL:
+            // Garante que o usuário autenticado só possa fazer o upgrade da sua própria conta.
+            if (id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            // 3. Busca o usuário no banco de dados.
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // 4. Lógica de Negócio: Altera o plano e salva.
+            // (Opcional) Podemos verificar se ele já é Pro para evitar uma escrita desnecessária no banco.
+            if (user.Plan == "Pro")
+            {
+                return Ok(new { Message = "O usuário já está no plano Pro." });
+            }
+
+            user.Plan = "Pro";
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Upgrade para o plano Pro realizado com sucesso!" });
+        }
+
+        // PATCH: api/users/{id}/downgrade
+        // Endpoint dedicado para fazer o downgrade do plano de um usuário para "Free".
+        [HttpPatch("{id}/downgrade")]
+        public async Task<IActionResult> DowngradeToFree(ulong id)
+        {
+            // 1. Obtém o ID do usuário a partir do token JWT.
+            var userIdFromToken = ulong.Parse(User.FindFirstValue("id")!);
+
+            // 2. VERIFICAÇÃO DE SEGURANÇA: Garante que o usuário só possa alterar a própria conta.
+            if (id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            // 3. Busca o usuário no banco de dados.
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // 4. Lógica de Negócio: Altera o plano para "Free" e salva.
+            // (Opcional) Verifica se ele já é Free para evitar uma escrita desnecessária.
+            if (user.Plan == "Free")
+            {
+                return Ok(new { Message = "O usuário já está no plano Free." });
+            }
+
+            user.Plan = "Free";
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Downgrade para o plano Free realizado com sucesso!" });
         }
     }
 }
