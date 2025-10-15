@@ -82,6 +82,19 @@ export interface PublicProfileDto {
   links: LinkDto[];
 }
 
+// User Profile (for authenticated user)
+export interface UserProfileDto {
+  displayName: string;
+  bio: string;
+  profilePictureUrl: string;
+}
+
+export interface UpdateProfileDto {
+  displayName: string;
+  bio: string;
+  profilePictureUrl: string;
+}
+
 // Auth context state
 export interface AuthUser {
   id: number;
