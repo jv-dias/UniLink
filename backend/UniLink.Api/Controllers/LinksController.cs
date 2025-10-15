@@ -21,6 +21,41 @@ namespace UniLink.Api.Controllers
             _context = context;
         }
 
+        // GET: api/links/user/{username}
+        // Retorna a lista de links públicos e ativos de um usuário específico.
+        [HttpGet("user/{username}")]
+        [AllowAnonymous] // <--- IMPORTANTE: Permite o acesso a este endpoint sem token.
+        public async Task<IActionResult> GetUserLinksByUsername(string username)
+        {
+            // 1. Encontra o usuário pelo seu nome de usuário público.
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            // 2. Se o usuário não for encontrado, retorna um erro 404 Not Found.
+            if (user == null)
+            {
+                return NotFound("Página de usuário não encontrada.");
+            }
+
+            // 3. Busca os links do usuário, mas com duas condições importantes:
+            //    - Apenas os que pertencem ao usuário encontrado.
+            //    - Apenas os que estão marcados como ativos (`IsActive == true`).
+            var links = await _context.Links
+                .Where(l => l.UserId == user.Id && l.IsActive == true)
+                .OrderBy(l => l.Position)
+                .Select(l => new LinkDto
+                {
+                    Id = l.Id,
+                    Title = l.Title,
+                    Url = l.Url,
+                    Position = l.Position,
+                    IsActive = l.IsActive ?? true
+                })
+                .ToListAsync();
+
+            // 4. Retorna a lista de links públicos.
+            return Ok(links);
+        }
+
         // GET: api/links
         // Lista todos os links pertencentes ao usuário autenticado.
         [HttpGet]
