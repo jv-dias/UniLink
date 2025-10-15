@@ -73,6 +73,15 @@ export interface Page {
   profilePictureUrl?: string;
 }
 
+// Public Profile Response
+export interface PublicProfileDto {
+  username: string;
+  displayName: string;
+  bio: string;
+  profilePictureUrl: string;
+  links: LinkDto[];
+}
+
 // Auth context state
 export interface AuthUser {
   id: number;
