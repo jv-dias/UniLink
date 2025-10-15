@@ -1,10 +1,9 @@
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react"
+import { useNavigate } from "react-router-dom"
 
 import {
   Avatar,
@@ -26,17 +25,31 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/features/auth/context/AuthContext"
 
 export function NavUser({
   user,
 }: {
-  user: {
+  user?: {
     name: string
     email: string
     avatar: string
   }
 }) {
   const { isMobile } = useSidebar()
+  const { user: authUser, logout } = useAuth()
+  const navigate = useNavigate()
+
+  console.log("Auth User:", authUser)
+
+  // Map authUser to display format or use prop as fallback
+  const displayUser = authUser 
+    ? {
+        name: authUser.username,
+        email: authUser.email || "",
+        avatar: ""
+      }
+    : user || { name: "Usuário", email: "", avatar: "" }
 
   function getInitials(name: string) {
     if (!name) return "U"
@@ -45,6 +58,15 @@ export function NavUser({
     const first = parts[0].charAt(0)
     const last = parts[parts.length - 1].charAt(0)
     return `${first}${last}`.toUpperCase()
+  }
+
+  async function handleLogout() {
+    await logout()
+    navigate("/auth/entrar")
+  }
+
+  function handleAccountClick() {
+    navigate("/perfil")
   }
 
   return (
@@ -57,13 +79,13 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
+                <AvatarImage src={displayUser.avatar} alt={displayUser.name} />
+                <AvatarFallback className="rounded-lg">{getInitials(displayUser.name)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{displayUser.name}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {displayUser.email}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -78,36 +100,28 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
+                  <AvatarImage src={displayUser.avatar} alt={displayUser.name} />
+                  <AvatarFallback className="rounded-lg">{getInitials(displayUser.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{displayUser.name}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {displayUser.email}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccountClick}>
                 <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
+                Conta
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
-              Log out
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
