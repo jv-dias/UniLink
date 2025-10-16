@@ -9,7 +9,7 @@ namespace UniLink.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Protege TODOS os endpoints neste controlador.
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;

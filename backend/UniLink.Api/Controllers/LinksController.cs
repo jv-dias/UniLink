@@ -24,7 +24,7 @@ namespace UniLink.Api.Controllers
         // GET: api/links/user/{username}
         // Retorna a lista de links públicos e ativos de um usuário específico.
         [HttpGet("user/{username}")]
-        [AllowAnonymous] // <--- IMPORTANTE: Permite o acesso a este endpoint sem token.
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserLinksByUsername(string username)
         {
             // 1. Encontra o usuário pelo seu nome de usuário público.

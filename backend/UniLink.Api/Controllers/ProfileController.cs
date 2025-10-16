@@ -63,7 +63,6 @@ namespace UniLink.Api.Controllers
 
 
         // --- ENDPOINTS PROTEGIDOS (para o usuário gerenciar seu próprio perfil) ---
-
         // GET: api/profile/me
         // Retorna os dados do perfil do usuário autenticado (para preencher um formulário de edição).
         [HttpGet("me")]

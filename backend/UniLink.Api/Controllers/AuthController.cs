@@ -18,7 +18,7 @@ namespace UniLink.Api.Controllers
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
 
-        // Injetamos o DbContext e a IConfiguration via construtor
+        // Injeta o DbContext e a IConfiguration via construtor
         public AuthController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
