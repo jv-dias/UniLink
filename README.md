@@ -16,7 +16,49 @@ A aplica��o funciona como um agregador de links, permitindo que usu�rios s
 * **Gerenciamento de Banco:** phpMyAdmin.
 * **Arquitetura de Banco de Dados:** Database-First, utilizando Entity Framework Core para o mapeamento objeto-relacional (ORM).
 * **Autenticação:** JWT (JSON Web Tokens).
+* **Documentação da API:** Swagger/OpenAPI.
 * **Containerização:** Docker e Docker Compose para garantir um ambiente de desenvolvimento consistente e portátil.
+
+#### Estrutura do Backend
+
+```
+backend/UniLink.Api/
+├── Controllers/                   # Controladores da API (endpoints)
+│   ├── AuthController.cs          # Autenticação (login, registro)
+│   ├── LinksController.cs         # CRUD de links
+│   ├── ProfileController.cs       # Gerenciamento de perfil
+│   └── UsersController.cs         # Gerenciamento de usuários
+├── Data/                          # Contexto do banco de dados
+│   └── AppDbContext.cs            # DbContext do Entity Framework
+├── Decorators/                    # Padrão Decorator
+│   ├── ILinkClickService.cs       # Interface do serviço
+│   └── LinkClickService.cs        # Implementação base
+├── Dtos/                          # Data Transfer Objects
+│   ├── CreateLinkDto.cs           # DTO para criação de link
+│   ├── LinkDto.cs                 # DTO de link
+│   ├── LoginDto.cs                # DTO de login
+│   ├── PublicProfileDto.cs        # DTO de perfil público
+│   ├── RegisterDto.cs             # DTO de registro
+│   ├── UpdateLinkDto.cs           # DTO para atualização de link
+│   ├── UpdateProfileDto.cs        # DTO para atualização de perfil
+│   └── UpdateUserDto.cs           # DTO para atualização de usuário
+├── Models/                        # Modelos de domínio (entidades)
+│   ├── Link.cs                    # Entidade Link
+│   ├── Page.cs                    # Entidade Page (perfil público)
+│   └── User.cs                    # Entidade User
+├── Services/                      # Serviços da aplicação
+│   └── JwtTokenService.cs         # Serviço de geração de tokens JWT (Singleton)
+├── Strategies/                    # Padrão Strategy
+│   ├── ILinkValidationStrategy.cs # Interface da estratégia
+│   ├── FreePlanStrategy.cs        # Estratégia para plano gratuito
+│   └── ProPlanStrategy.cs         # Estratégia para plano profissional
+├── Properties/
+│   └── launchSettings.json        # Configurações de execução
+├── appsettings.json               # Configurações da aplicação
+├── appsettings.Development.json   # Configurações de desenvolvimento
+├── Program.cs                     # Entry point da aplicação
+└── UniLink.Api.csproj             # Arquivo de projeto .NET
+```
 
 ### 2.2. Frontend
 * **Framework:** React 19.1.1 com TypeScript.
